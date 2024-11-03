@@ -1,5 +1,6 @@
 import csv
 import logging
+import os
 from pathlib import Path
 from requests import get, RequestException
 from defusedxml.ElementTree import parse
@@ -26,9 +27,16 @@ def fetch_revoked_keybox_list():
         raise
 
 def main():
+    # 确认当前工作目录
+    logging.info(f"Current working directory: {os.getcwd()}")
+
     revoked_keybox_list = fetch_revoked_keybox_list()
 
-    with open("status.csv", "w", newline='') as csvfile:
+    # 使用绝对路径创建 CSV 文件
+    output_path = Path("status.csv").resolve()
+    logging.info(f"Output path for CSV: {output_path}")
+
+    with open(output_path, "w", newline='') as csvfile:
         fieldnames = ["File", "Status"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -58,6 +66,7 @@ def main():
             except Exception as e:
                 logging.error(f"Error processing {kb.name}: {e}")
 
+        logging.info(f"Output data: {output}")
         writer.writerows(output)
         
         # 写入时间戳，增加3小时
