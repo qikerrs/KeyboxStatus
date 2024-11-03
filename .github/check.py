@@ -4,7 +4,7 @@ from pathlib import Path
 from requests import get, RequestException
 from defusedxml.ElementTree import parse
 from cryptography import x509
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -60,8 +60,9 @@ def main():
 
         writer.writerows(output)
         
-        # 写入时间戳
-        writer.writerow({"File": "写入时间", "Status": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+        # 写入时间戳，增加3小时
+        new_time = datetime.now() + timedelta(hours=8)
+        writer.writerow({"File": "TIME", "Status": new_time.strftime("%Y-%m-%d %H:%M:%S")})
 
 if __name__ == "__main__":
     main()
