@@ -27,14 +27,8 @@ def fetch_revoked_keybox_list():
 
 def main():
     revoked_keybox_list = fetch_revoked_keybox_list()
-    csv_file = Path("status.csv")
-    
-    # 删除原有的 CSV 文件（如果存在）
-    if csv_file.exists():
-        csv_file.unlink()
-        logging.info("Deleted existing status.csv file.")
 
-    with csv_file.open("w", newline='') as csvfile:
+    with open("status.csv", "w", newline='') as csvfile:
         fieldnames = ["File", "Status"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
