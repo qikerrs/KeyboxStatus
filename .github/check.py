@@ -4,6 +4,7 @@ from pathlib import Path
 from requests import get, RequestException
 from defusedxml.ElementTree import parse
 from cryptography import x509
+from datetime import datetime
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
@@ -58,6 +59,9 @@ def main():
                 logging.error(f"Error processing {kb.name}: {e}")
 
         writer.writerows(output)
+        
+        # 写入时间戳
+        writer.writerow({"File": "写入时间", "Status": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
 if __name__ == "__main__":
     main()
