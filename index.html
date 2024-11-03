@@ -64,7 +64,7 @@
                     row.forEach((cell, cellIndex) => {
                         // 如果是最后一列，添加链接到指定网站
                         if (cellIndex === row.length - 1 && index !== 0) {
-                            html += `<td class="file-name" onclick="window.location.href='https://ssm-fx.github.io/htmltest/'">${cell}</td>`;
+                            html += `<td class="file-name" onclick="window.location.href='https://v1.hitokoto.cn/?encode=text'">${cell}</td>`;
                         } else if (cellIndex === 0 && index !== 0) {
                             html += `<td class="file-name" onclick="downloadFile('${cell}')">${cell}</td>`;
                         } else {
