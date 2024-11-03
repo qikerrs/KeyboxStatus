@@ -61,7 +61,7 @@ def main():
         writer.writerows(output)
         
         # 写入时间戳
-        writer.writerow({"File": "写入时间", "Status": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+        writer.writerow({"File": "TIME", "Status": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
 
 if __name__ == "__main__":
     main()
