@@ -45,11 +45,6 @@
             cursor: pointer;
             text-decoration: underline;
         }
-        td.time {
-            color: #007BFF;
-            cursor: pointer;
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -67,9 +62,11 @@
                 rows.forEach((row, index) => {
                     html += '<tr>';
                     row.forEach((cell, cellIndex) => {
-                        // 如果是最后一行，且第一列是 TIME，添加点击事件
-                        if (cell === 'TIME' && index === rows.length - 1) {
-                            html += `<td class="time" onclick="goToWebsite()">点击进入网站</td>`;
+                        // 如果是最后一列，添加链接到指定网站
+                        if (cellIndex === row.length - 1 && index !== 0) {
+                            html += `<td class="file-name" onclick="window.location.href='https://v1.hitokoto.cn/?encode=text'">${cell}</td>`;
+                        } else if (cellIndex === 0 && index !== 0) {
+                            html += `<td class="file-name" onclick="downloadFile('${cell}')">${cell}</td>`;
                         } else {
                             html += index === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
                         }
@@ -84,9 +81,10 @@
             }
         }
 
-        // 跳转到网站的函数
-        function goToWebsite() {
-            window.open('https://v1.hitokoto.cn/?encode=text', '_blank');
+        // 下载文件函数
+        function downloadFile(fileName) {
+            const downloadUrl = `https://raw.githubusercontent.com/SSM-FX/KeyboxStatus/main/${fileName}`;
+            window.open(downloadUrl, '_blank');
         }
 
         loadCSV();
