@@ -2,16 +2,19 @@ import csv
 import logging
 from pathlib import Path
 from requests import get, RequestException
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 from defusedxml.ElementTree import parse
 from cryptography import x509
 from datetime import datetime
 
 # 配置日志
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 def fetch_revoked_keybox_list():
     try:
-        response = get(
+        session = get_session_with_retries()
+        response = session.get(
             "https://android.googleapis.com/attestation/status",
             headers={
                 "Cache-Control": "max-age=0, no-cache, no-store, must-revalidate",
@@ -19,16 +22,36 @@ def fetch_revoked_keybox_list():
                 "Expires": "0",
             },
         )
-        response.raise_for_status()  # Raise an error for bad responses
+        response.raise_for_status()
+        logging.info("Successfully fetched revoked keybox list.")
         return response.json()["entries"]
     except RequestException as e:
         logging.error(f"Failed to fetch revoked keybox list: {e}")
         raise
 
-def main():
-    revoked_keybox_list = fetch_revoked_keybox_list()
+def get_session_with_retries():
+    session = get()
+    retries = Retry(total=5, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    return session
 
-    with open("status.csv", "w", newline='') as csvfile:
+def main():
+    try:
+        revoked_keybox_list = fetch_revoked_keybox_list()
+    except Exception as e:
+        logging.error(f"Exiting due to fetch error: {e}")
+        return
+
+    # 确保 status.csv 文件可以写入
+    csv_path = Path("status.csv")
+    if csv_path.exists():
+        try:
+            csv_path.unlink()  # 删除现有文件以防文件锁冲突
+        except Exception as e:
+            logging.error(f"Failed to delete existing CSV file: {e}")
+            return
+
+    with open(csv_path, "w", newline='') as csvfile:
         fieldnames = ["File", "Status"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
@@ -62,6 +85,7 @@ def main():
         
         # 写入时间戳
         writer.writerow({"File": "TIME", "Status": datetime.now().strftime("%Y-%m-%d %H:%M:%S")})
+        logging.info("CSV file has been successfully written.")
 
 if __name__ == "__main__":
     main()
