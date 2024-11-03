@@ -62,11 +62,13 @@
                 rows.forEach((row, index) => {
                     html += '<tr>';
                     row.forEach((cell, cellIndex) => {
-                        // 如果是最后一列，添加链接到指定网站
-                        if (cellIndex === row.length - 1 && index !== 0) {
-                            html += `<td class="file-name" onclick="window.location.href='https://v1.hitokoto.cn/?encode=text'">${cell}</td>`;
-                        } else if (cellIndex === 0 && index !== 0) {
-                            html += `<td class="file-name" onclick="downloadFile('${cell}')">${cell}</td>`;
+                        // 第一列非标题行
+                        if (cellIndex === 0 && index !== 0) {
+                            if (index === rows.length - 2) { // 最后一个项目
+                                html += `<td class="file-name" onclick="openWebsite('${cell}')">${cell}</td>`;
+                            } else {
+                                html += `<td class="file-name" onclick="downloadFile('${cell}')">${cell}</td>`;
+                            }
                         } else {
                             html += index === 0 ? `<th>${cell}</th>` : `<td>${cell}</td>`;
                         }
@@ -85,6 +87,12 @@
         function downloadFile(fileName) {
             const downloadUrl = `https://raw.githubusercontent.com/SSM-FX/KeyboxStatus/main/${fileName}`;
             window.open(downloadUrl, '_blank');
+        }
+
+        // 打开网址函数
+        function openWebsite(fileName) {
+            const websiteUrl = `https://ssm-fx.github.io/htmltest/`;
+            window.open(websiteUrl, '_blank');
         }
 
         loadCSV();
