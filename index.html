@@ -54,7 +54,7 @@
     <script>
         async function loadCSV() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/SSM-FX/KeyboxStatus/refs/heads/main/status.csv');
+                const response = await fetch('https://raw.githubusercontent.com/qikerrs/KeyboxStatus/refs/heads/main/status.csv');
                 const csvText = await response.text();
                 const rows = csvText.split('\n').map(row => row.split(','));
 
@@ -85,13 +85,13 @@
 
         // 下载文件函数
         function downloadFile(fileName) {
-            const downloadUrl = `https://raw.githubusercontent.com/SSM-FX/KeyboxStatus/main/${fileName}`;
+            const downloadUrl = `https://raw.githubusercontent.com/qikerrs/KeyboxStatus/main/${fileName}`;
             window.open(downloadUrl, '_blank');
         }
 
         // 打开网址函数
         function openWebsite(fileName) {
-            const websiteUrl = `https://ssm-fx.github.io/htmltest/`;
+            const websiteUrl = `https://qikerrs.github.io/htmltest/`;
             window.open(websiteUrl, '_blank');
         }
 
